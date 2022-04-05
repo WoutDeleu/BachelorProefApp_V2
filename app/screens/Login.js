@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Dimensions } from 'react-native';
-import { Root, Popup } from 'popup-ui';
-import { useState } from "react";
+import React, { useRef, useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Dimensions, AsyncStorage } from 'react-native';
 import axios from "axios";
+
+import { Root, Popup } from 'popup-ui';
 import jwt_decode from 'jwt-decode';
 import qs from "qs";
 import useAuth from '../hooks/useAuth';
@@ -27,7 +27,10 @@ function Login() {
             console.log("Email is Correct");
         }
     }
+    const errRef = useRef();
 
+    let loginIsIncorrect = false;
+    let serverError = false;
 
     const logInCheck = async (e) => {
         e.preventDefault();
@@ -43,25 +46,44 @@ function Login() {
         axios(config).then(function(res){
             const decoded = jwt_decode(res.data.access_token);
             const roles = decoded.roles;
+            loginIsIncorrect = false;
+            serverError = false;
             setAuth({email,password, roles});
+            console.log(res.data.access_token);
 
-            localStorage.setItem("access_token", JSON.stringify(res.data.access_token));
-            localStorage.setItem("refresh_token", JSON.stringify(res.data.refresh_token));
-            navigate(from, {replace: true});
+            AsyncStorage.setItem("access_token", JSON.stringify(res.data.access_token));
+            AsyncStorage.setItem("refresh_token", JSON.stringify(res.data.refresh_token));
+            console.log(AsyncStorage.getItem("refresh_token"));
+
+            //navigation
+
         }).catch(function (error) {
             console.log(error.response?.status)
-            if (!error?.response) {
-                setErrMsg('No Server Response');
-            } else if (error.response?.status ===401){
-                setErrMsg('Unauthorized');
-            } else {
-                setErrMsg('Login Failed')
+            if(error.response?.status === 401) {
+                setErrMsg('Login Failed');
+                loginIsIncorrect = true;
+                serverError = false;
             }
-            errRef.current.focus();
+            else {
+                setErrMsg('No Server Response');
+                loginIsIncorrect = false;
+                serverError = true;
+            }
+            //errRef.current.focus();
         });
 
+        if(serverError) {
+            Popup.show({
+                type: 'Warning',
+                title: 'Server Error',
+                button: true,
+                textBody: 'Server error, try again later ',
+                buttontext: 'Ok',
+                callback: () => Popup.hide()
+            })
+        }
 
-        if(true /*Check if pasword/username is correct*/) {
+        if(loginIsIncorrect) {
             Popup.show({
                 type: 'Danger',
                 title: 'Password/Username are incorrect',
@@ -72,8 +94,8 @@ function Login() {
             })
         }
         else {}
-        console.log('password = ' + password.toString());
-        console.log('email = ' + email.toString());
+        // console.log('password = ' + password.toString());
+        // console.log('email = ' + email.toString());
 
     }
 
