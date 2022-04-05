@@ -1,5 +1,6 @@
 {
   "expo": {
+    "userInterfaceStyle": "light",
     "name": "BachelorProefApp_V2",
     "slug": "BachelorProefApp_V2",
     "version": "1.0.0",

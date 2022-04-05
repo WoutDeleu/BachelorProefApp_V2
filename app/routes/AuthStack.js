@@ -1,44 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from "../screens/HomeScreen";
-import Login from "../screens/Login";
+import LoginScreen from "../screens/LoginScreen";
 import * as SecureStore from 'expo-secure-store';
+import Tabs from './Tabs'
 
 const AuthStack = () => {
   const AuthStack = createNativeStackNavigator();
+  const [isSignedIn, setSignedIn] = useState();
+  const [loading, setLoading] = useState();
 
-  async function getValueFor(key) {
-    let result = await SecureStore.getItemAsync(key);
-    if (result) {
-      alert("🔐 Here's your value 🔐 \n" + result);
-    } else {
-      alert('No values stored under that key.');
+  React.useEffect(() => {
+    const loggedIn = async () => {
+      const t = await SecureStore.getItemAsync("access_token")
+      console.log(t);
+      setSignedIn(t !== null ? true : false)
     }
+    loggedIn()
+  }, [])
+
+  if (isSignedIn === undefined) {
+    //Maak hier een loading van
+    return null;
   }
 
 
   return (
     <AuthStack.Navigator>
         {
-            getValueFor("access_token") == null ? (
+          isSignedIn? (
               <>
-                  <AuthStack.Screen name = "HomeScreen" component={HomeScreen} />
+                <AuthStack.Screen name = "Tabs" component={Tabs}/>
               </>
             ) : (
               <>
-                  <AuthStack.Screen
-                      name = "Login"
-                      component={Login}
-                      options={{
-                          title: 'Log In',
-                          headerStyle: {
-                              backgroundColor: '#212521'
-                          },
-                          headerTintColor: '#fff',
-                          headerTitleStyle: {
-                              fontWeight: 'bold',
-                          },
-                      }}/>
+                <AuthStack.Screen
+                    name = "LoginScreen"
+                    component={LoginScreen}
+                    options={{
+                      title: 'Log In',
+                      headerStyle: {
+                        backgroundColor: '#212521'
+                      },
+                      headerTintColor: '#fff',
+                      headerTitleStyle: {
+                        fontWeight: 'bold',
+                      },
+                      animationTypeForReplace: isSignedIn ? 'pop' : 'push',
+                    }}
+                />
+
               </>
             )
         }

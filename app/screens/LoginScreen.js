@@ -8,7 +8,9 @@ import jwt_decode from 'jwt-decode';
 import qs from "qs";
 import useAuth from '../hooks/useAuth';
 
-function Login() {
+function LoginScreen() {
+    const ip = "192.168.20.181";
+    const portNr = "8081";
     const win = Dimensions.get('window');
 
     const [email,setEmail] = useState('');
@@ -33,10 +35,11 @@ function Login() {
 
     const logInCheck = async (e) => {
         e.preventDefault();
+        const url_login = "http://" + ip + ":" + portNr + "/authentication/login";
         const data = qs.stringify({email, password});
         const config = {
             method: 'post',
-            url: 'http://192.168.20.181:8081/authentication/login',
+            url: url_login,
             headers: {
                 'Content-Type': "application/x-www-form-urlencoded"
             },
@@ -45,8 +48,7 @@ function Login() {
         axios(config).then(function(res){
             const decoded = jwt_decode(res.data.access_token);
             const roles = decoded.roles;
-            //console.log(decoded);
-            setAuth({email,password, roles});
+            //setAuth({email,password, roles});
 
             save("access_token", JSON.stringify(res.data.access_token));
             save("refresh_token", JSON.stringify(res.data.refresh_token));
@@ -56,7 +58,7 @@ function Login() {
         }).catch(function (error) {
             console.log(error.response?.status)
             if(error.response?.status === 401) {
-                setErrMsg('Login Failed');
+                setErrMsg('LoginScreen Failed');
                 Popup.show({
                     type: 'Danger',
                     title: 'Password/Username are incorrect',
@@ -86,7 +88,13 @@ function Login() {
     }
 
     async function save(key, value) {
-        await SecureStore.setItemAsync(key, value);
+        try {
+            await SecureStore.setItemAsync(key, value);
+            //console.log("done");
+        }
+        catch (e) {
+            console.log(e.message);
+        }
     }
 
     return(
@@ -188,4 +196,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Login;
+export default LoginScreen;

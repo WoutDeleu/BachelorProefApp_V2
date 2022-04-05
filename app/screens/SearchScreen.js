@@ -3,18 +3,10 @@ import * as SecureStore from "expo-secure-store";
 import React from "react";
 import Swiper from 'react-native-swiper'
 
-function HomeScreen({navigation}) {
-    async function del(key) {
-        try {
-            await SecureStore.deleteItemAsync(key);
-            //console.log("done");
-        }
-        catch (e) {
-            console.log(e.message);
-        }
-    }
+function SearchScreen({navigation}) {
 
     return(
+
         <View>
             <Text>test</Text>
         </View>
@@ -31,4 +23,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
-export default HomeScreen;
+export default SearchScreen;
