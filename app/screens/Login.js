@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Dimensions, AsyncStorage } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
 
 import { Root, Popup } from 'popup-ui';
@@ -14,6 +15,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const { auth, setAuth } = useAuth();
     const [errMsg, setErrMsg] = useState('');
+
     const validateEmail = (text) => {
         console.log(text);
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -27,10 +29,7 @@ function Login() {
             console.log("Email is Correct");
         }
     }
-    const errRef = useRef();
 
-    let loginIsIncorrect = false;
-    let serverError = false;
 
     const logInCheck = async (e) => {
         e.preventDefault();
@@ -46,14 +45,11 @@ function Login() {
         axios(config).then(function(res){
             const decoded = jwt_decode(res.data.access_token);
             const roles = decoded.roles;
-            loginIsIncorrect = false;
-            serverError = false;
+            //console.log(decoded);
             setAuth({email,password, roles});
-            console.log(res.data.access_token);
 
-            AsyncStorage.setItem("access_token", JSON.stringify(res.data.access_token));
-            AsyncStorage.setItem("refresh_token", JSON.stringify(res.data.refresh_token));
-            console.log(AsyncStorage.getItem("refresh_token"));
+            save("access_token", JSON.stringify(res.data.access_token));
+            save("refresh_token", JSON.stringify(res.data.refresh_token));
 
             //navigation
 
@@ -61,42 +57,36 @@ function Login() {
             console.log(error.response?.status)
             if(error.response?.status === 401) {
                 setErrMsg('Login Failed');
-                loginIsIncorrect = true;
-                serverError = false;
+                Popup.show({
+                    type: 'Danger',
+                    title: 'Password/Username are incorrect',
+                    button: true,
+                    textBody: 'Your password and/or username are incorrect. Please try again ',
+                    buttontext: 'Ok',
+                    callback: () => Popup.hide()
+                })
+            }
+            else if (!error?.response) {
+                setErrMsg('No Server Response');
+                console.log(errMsg);
             }
             else {
                 setErrMsg('No Server Response');
-                loginIsIncorrect = false;
-                serverError = true;
+                Popup.show({
+                    type: 'Warning',
+                    title: 'Server Error',
+                    button: true,
+                    textBody: 'Server error, try again later ',
+                    buttontext: 'Ok',
+                    callback: () => Popup.hide()
+                })
             }
             //errRef.current.focus();
         });
+    }
 
-        if(serverError) {
-            Popup.show({
-                type: 'Warning',
-                title: 'Server Error',
-                button: true,
-                textBody: 'Server error, try again later ',
-                buttontext: 'Ok',
-                callback: () => Popup.hide()
-            })
-        }
-
-        if(loginIsIncorrect) {
-            Popup.show({
-                type: 'Danger',
-                title: 'Password/Username are incorrect',
-                button: true,
-                textBody: 'Your password and/or username are incorrect. Please try again ',
-                buttontext: 'Ok',
-                callback: () => Popup.hide()
-            })
-        }
-        else {}
-        // console.log('password = ' + password.toString());
-        // console.log('email = ' + email.toString());
-
+    async function save(key, value) {
+        await SecureStore.setItemAsync(key, value);
     }
 
     return(
