@@ -19,33 +19,51 @@ const Tabs = () => {
         <Tab.Navigator
             screenOptions={{
                 headerShown: false,
-                tabBarShowLabel: false,
-                tabBarStyle: {backgroundColor: '#AD40AF'},
-                tabBarInactiveTintColor: '#fff',
-                tabBarActiveTintColor: 'yellow',
+                tabBarShowLabel: true,
+                tabBarStyle: {
+                    backgroundColor: '#ffffff',
+                    borderTopRightRadius: 20,
+                    borderTopLeftRadius: 20,
+                },
+                tabBarInactiveTintColor: '#9b9b9b',
+                tabBarActiveTintColor: '#000000',
+
+
             }}
         >
             <Tab.Screen
-                name="ActionScreen"
+                name="Actions"
                 component={ActionScreen}
-                // options={({route}) => ({
-                //     tabBarStyle: {
-                //         display: getTabBarVisibility(route),
-                //         backgroundColor: '#AD40AF',
-                //     },
-                //     tabBarIcon: ({color, size}) => (
-                //         <Ionicons name="home-outline" color={color} size={size} />
-                //     ),
-                // })}
+                options={({route}) => ({
+                    tabBarIcon: ({color, size}) => (
+                        <Ionicons name="checkmark-circle-outline" color={color} size={size} />
+                    ),
+                })}
             />
             <Tab.Screen
-                name="PreferencesScreen" component={FavoriteScreen}
+                name="Preferences"
+                component={FavoriteScreen}
+                options={({route}) => ({
+                    tabBarIcon: ({color, size}) => (
+                        <Ionicons name="heart-outline" color={color} size={size} />
+                    ),
+                })}
             />
             <Tab.Screen
-                name="SearchScreen" component={SubjectListScreen}
+                name="List" component={SubjectListScreen}
+                options={({route}) => ({
+                    tabBarIcon: ({color, size}) => (
+                        <Ionicons name="list-circle-outline" color={color} size={size} />
+                    ),
+                })}
             />
             <Tab.Screen
-                name="SettingsScreen" component={SettingsScreen}
+                name="Personal" component={SettingsScreen}
+                options={({route}) => ({
+                    tabBarIcon: ({color, size}) => (
+                        <Ionicons name="person-outline" color={color} size={size} />
+                    ),
+                })}
             />
         </Tab.Navigator>
     )

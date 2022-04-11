@@ -9,6 +9,7 @@ import jwt_decode from 'jwt-decode';
 import qs from "qs";
 import useAuth from '../hooks/useAuth';
 import {NavigationActions as navigation} from "react-navigation";
+import {CommonActions} from "@react-navigation/native";
 
 function LoginScreen() {
     const ip = "192.168.20.181";
@@ -62,8 +63,6 @@ function LoginScreen() {
             save("refresh_token_expired", JSON.stringify(refresh_token_expired));
 
             console.log("Ingelogd");
-            navigation.navigate('../routes/Tabs.js');
-            //navigation
 
         }).catch(function (error) {
             console.log(error.response?.status)
