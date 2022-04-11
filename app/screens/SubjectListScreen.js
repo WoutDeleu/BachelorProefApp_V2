@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import React from "react";
 import Swiper from 'react-native-swiper'
 
-function PreferencesScreen({navigation}) {
+function SubjectListScreen({navigation}) {
 
     return(
 
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
-export default PreferencesScreen;
+export default SubjectListScreen;

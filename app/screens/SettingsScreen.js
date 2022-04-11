@@ -3,7 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import React from "react";
 import Swiper from 'react-native-swiper'
 
-function SettingsScreen({navigation}) {
+function SettingsScreen() {
 
     return(
 

@@ -2,11 +2,13 @@ import React, { useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Dimensions, AsyncStorage } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
+import Tabs from "../routes/Tabs"
 
 import { Root, Popup } from 'popup-ui';
 import jwt_decode from 'jwt-decode';
 import qs from "qs";
 import useAuth from '../hooks/useAuth';
+import {NavigationActions as navigation} from "react-navigation";
 
 function LoginScreen() {
     const ip = "192.168.20.181";
@@ -53,6 +55,14 @@ function LoginScreen() {
             save("access_token", JSON.stringify(res.data.access_token));
             save("refresh_token", JSON.stringify(res.data.refresh_token));
 
+            const time = new Date().getTime();//getTime gives the amount of millieseconds that have passed since January 1st 1970
+            const access_token_expired = new Date(time + 10 * 60 * 1000).getTime();
+            const refresh_token_expired = new Date(time + 24 * 60 * 60 * 1000).getTime();
+            save("access_token_expired", JSON.stringify(access_token_expired));
+            save("refresh_token_expired", JSON.stringify(refresh_token_expired));
+
+            console.log("Ingelogd");
+            navigation.navigate('../routes/Tabs.js');
             //navigation
 
         }).catch(function (error) {

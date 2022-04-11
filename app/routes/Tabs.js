@@ -1,43 +1,67 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from "../screens/HomeScreen";
-import PreferencesScreen from "../screens/PreferencesScreen";
-import SearchScreen from "../screens/SearchScreen";
-import SettingsScreen from "../screens/SettingsScreen";
-import Style from "react-native-loading-spinner-overlay/src/style";
-
 //https://www.youtube.com/watch?v=gPaBicMaib4
 //https://reactnavigation.org/docs/tab-based-navigation/
 
-
-const Tab = createBottomTabNavigator;
+import * as React from 'react';
+import {StyleSheet, View} from "react-native";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import ActionScreen from "../screens/ActionScreen";
+import FavoriteScreen from "../screens/FavoriteScreen";
+import SubjectListScreen from "../screens/SubjectListScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+import {Image} from "react-native-web";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Feather from 'react-native-vector-icons/Feather';
 
 const Tabs = () => {
+    const Tab = createBottomTabNavigator();
+
     return(
         <Tab.Navigator
-            tabBarOptions={{
+            screenOptions={{
+                headerShown: false,
                 tabBarShowLabel: false,
-                style: {
-                    position: 'absolute',
-                    bottom: 25,
-                    left: 20,
-                    right: 20,
-                    elevation: 0,
-                    backgroundColor: '#ffffffff',
-                    borderRadius: 15,
-                    height: 90
-                }
+                tabBarStyle: {backgroundColor: '#AD40AF'},
+                tabBarInactiveTintColor: '#fff',
+                tabBarActiveTintColor: 'yellow',
             }}
         >
-            <Tab.Screen name="HomeScreen" component={HomeScreen} />
-            <Tab.Screen name="PreferencesScreen" component={PreferencesScreen} />
-            <Tab.Screen name="SearchScreen" component={SearchScreen} />
-            <Tab.Screen name="SettingsScreen" component={SettingsScreen} />
+            <Tab.Screen
+                name="ActionScreen"
+                component={ActionScreen}
+                // options={({route}) => ({
+                //     tabBarStyle: {
+                //         display: getTabBarVisibility(route),
+                //         backgroundColor: '#AD40AF',
+                //     },
+                //     tabBarIcon: ({color, size}) => (
+                //         <Ionicons name="home-outline" color={color} size={size} />
+                //     ),
+                // })}
+            />
+            <Tab.Screen
+                name="PreferencesScreen" component={FavoriteScreen}
+            />
+            <Tab.Screen
+                name="SearchScreen" component={SubjectListScreen}
+            />
+            <Tab.Screen
+                name="SettingsScreen" component={SettingsScreen}
+            />
         </Tab.Navigator>
-    );
-}
+    )
+};
 
-const style = StyleSheet.create(
-
-)
+const styles = StyleSheet.create({
+    shadow: {
+        shadowColor:'#7F5DF0',
+        shadowOffset: {
+            width: 0,
+            height: 0,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.5,
+        elevation: 5
+    }
+});
 
 export default Tabs;
