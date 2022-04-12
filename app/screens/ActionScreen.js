@@ -7,7 +7,7 @@ import jwt_decode from 'jwt-decode';
 function ActionScreen({navigation}) {
     async function logOut() {
         try {
-            await SecureStore.deleteItemAsync("access_token");
+            await SecureStore.deleteItemAsync("access_token"    );
             await SecureStore.deleteItemAsync("refresh_token");
             await SecureStore.deleteItemAsync("access_token_expired");
             await SecureStore.deleteItemAsync("refresh_token_expired");

@@ -4,7 +4,7 @@ import LoginScreen from "../screens/LoginScreen";
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
 import Tabs from "./Tabs";
-import ActionScreen from "../screens/ActionScreen";
+import ForgotPasswordScreen from "../screens/ForgotPassword";
 
 
 const AuthStack = () => {
@@ -15,7 +15,6 @@ const AuthStack = () => {
   const ip = "192.168.20.181";
   const portNr = "8081";
   const url_refresh = "http://" + ip + ":" + portNr + "/authentication/token/refresh";
-
   React.useEffect(() => {
     const loggedIn = async () => {
       const t = await SecureStore.getItemAsync("access_token")
@@ -62,6 +61,7 @@ const AuthStack = () => {
     loggedIn()
   }, [])
 
+
   if (isSignedIn === undefined) {
     //Maak hier een loading van
     return null;
@@ -73,22 +73,39 @@ const AuthStack = () => {
         {isSignedIn? (
               <AuthStack.Screen name="Tabs" component={Tabs} options={{headerShown : false}}/>
             ) : (
-              <AuthStack.Screen
-                  name = "LoginScreen"
-                  component={LoginScreen}
-                  options={{
-                    title: 'Log In',
+               <>
+                  <AuthStack.Screen
+                      name = "LoginScreen"
+                      component={LoginScreen}
+                      options={{
+                        title: 'Log In',
+                        headerStyle: {
+                          backgroundColor: '#212521'
+                        },
+                        headerTitleStyle: {
+                          fontWeight: 'bold',
+                          color: '#ffffff',
+                        },
+                        animationTypeForReplace: isSignedIn ? 'pop' : 'push',
+                      }}
+                  />
+                  <AuthStack.Screen
+                    name = "ForgotPassword"
+                    component={ForgotPasswordScreen}
+                    options={{
+                    title: 'ForgotPassword',
                     headerStyle: {
-                      backgroundColor: '#212521'
-                    },
+                    backgroundColor: '#212521'
+                  },
                     headerTitleStyle: {
-                      fontWeight: 'bold',
-                      color: '#ffffff',
-                    },
+                    fontWeight: 'bold',
+                    color: '#ffffff',
+                  },
                     animationTypeForReplace: isSignedIn ? 'pop' : 'push',
                   }}
-              />
-            )
+                />
+             </>
+        )
         }
     </AuthStack.Navigator>
   );

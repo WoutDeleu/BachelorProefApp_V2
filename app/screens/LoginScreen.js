@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Dimensions, AsyncStorage } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
+import * as Updates from 'expo-updates';
 import Tabs from "../routes/Tabs"
 
 import { Root, Popup } from 'popup-ui';
@@ -11,9 +12,10 @@ import useAuth from '../hooks/useAuth';
 import {NavigationActions as navigation} from "react-navigation";
 import {CommonActions} from "@react-navigation/native";
 
-function LoginScreen() {
+function LoginScreen({navigation}) {
     const ip = "192.168.20.181";
     const portNr = "8081";
+
     const win = Dimensions.get('window');
 
     const [email,setEmail] = useState('');
@@ -63,6 +65,7 @@ function LoginScreen() {
             save("refresh_token_expired", JSON.stringify(refresh_token_expired));
 
             console.log("Ingelogd");
+            reloadApp();
 
         }).catch(function (error) {
             console.log(error.response?.status)
@@ -94,6 +97,10 @@ function LoginScreen() {
             }
             //errRef.current.focus();
         });
+    }
+
+    async function reloadApp () {
+        await Updates.reloadAsync();
     }
 
     async function save(key, value) {
@@ -140,7 +147,7 @@ function LoginScreen() {
                         placeholderTextColor="#212521"
                         onChangeText={text => setPassword(text)}/>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => { navigation.navigate('ForgotPassword')}}>
                     <Text style={styles.forgot}>Forgot Password?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginBtn} onPress={logInCheck}>
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
         width:"80%",
         backgroundColor:"#fff",
         borderRadius:25,
-        borderColor:"#212521",
+        borderColor:"Z",
         borderWidth:2,
         height:50,
         marginBottom:20,
